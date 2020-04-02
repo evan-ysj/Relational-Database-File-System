@@ -25,18 +25,13 @@ cursor.execute("""create table if not exists `$env_path$`(
                     `path` varchar(500),
                     primary key (`path`)) engine=InnoDB""")
 
-cursor.execute("""insert into `$env_path$` values ('/Users/Evan/anaconda3/bin'),
-                                                  ('/Users/Evan/anaconda3/condabin'),
-                                                  ('/Library/Java/JavaVirtualMachines/jdk-12.0.1.jdk/Contents/Home/bin'),
-                                                  ('/usr/local/mysql/bin'),
-                                                  ('/Library/tomcat/bin'),
-                                                  ('/usr/local/bin'),
+cursor.execute("""insert into `$env_path$` values ('/usr/local/bin'),
                                                   ('/usr/bin'),
                                                   ('/bin'),
                                                   ('/usr/sbin'),
                                                   ('/sbin'),
-                                                  ('.'),
-                                                  ('/usr/local/Cellar/scala/bin')""")
+                                                  ('/root/bin'),
+                                                  ('/usr/local/sbin')""")
 
 count = 0
 with open('treefile', 'r') as f:
@@ -106,7 +101,7 @@ with open('treefile', 'r') as f:
                             for l in file.readlines():
                                 content += l
                     except FileNotFoundError as x:
-                        print(x)
+                        pass
                 
                 insert_cur = "insert into `[{}]` (prefix, content) values ('{}', '{}')"
                 cursor.execute(insert_cur.format(name, prefix, content))     

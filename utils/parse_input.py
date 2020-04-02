@@ -1,5 +1,7 @@
 #--coding:utf-8--
 import re
+import subprocess
+import os
 from utils import query
 
 def parse(fs, input_string):
@@ -43,11 +45,24 @@ def parse(fs, input_string):
             print("Error: Please check the format of target path!")
             return False
         fs.grep(args)
+    elif command == '$PATH':
+        fs.get_path()
     elif command == 'exit':
         return True
     elif command == '':
         return False
     else:
+        exe = fs.get_executable(command)
+        if not exe:
+            print("Invalid command")
+        for e in exe:
+            try:
+                retcode = subprocess.call(e, shell=True, stderr=subprocess.PIPE)
+                if not retcode:
+                    return False
+            except:
+                continue
         print("Invalid command")
+        return False
     return False
             

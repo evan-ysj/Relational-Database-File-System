@@ -30,14 +30,49 @@ class FileSystem(object):
                 parent_prefix = target_dir[:-(len(cur_name)+len(parent_name)+1)]
             cursor = self._connection.cursor()
             try:
-                cursor.execute("select name from `{}` where name='{}' and prefix='{}' and type='d'".format(parent_name, cur_name, parent_prefix))
+                # print("select * from `{}` where name='{}' and prefix='{}'".format(parent_name, cur_name, parent_prefix))
+                cursor.execute("select * from `{}` where name='{}' and prefix='{}'".format(parent_name, cur_name, parent_prefix))
             except Exception as e:
                 print("Error: Specified directory does not exist!")
                 # print(e)
                 return
-            if not cursor.fetchall():
+            entry = cursor.fetchone()
+            if not entry:
                 print("Error: Specified directory does not exist!")
-            else:
+                return
+            if entry[3] == 'd':
+                self.cur_name = cur_name
+                self.cur_prefix = cur_prefix
+                self.parent_name = parent_name
+                self.parent_prefix = parent_prefix
+            elif entry[3] == 'l':
+                link = entry[8]
+                if link[0] != '/':
+                    link_split = link.split('/')
+                    link_prefix_split = link.split('/')
+                    link_prefix = cur_prefix
+                    for i in range(1, len(link_prefix_split) - 1):
+                        link_prefix = link_prefix[:-len(link_prefix.split('/')[-1])]
+                    link = link_prefix + link.split('../')[-1]
+                    if link[0] != '/':
+                        link = '/' + link
+                cur_name = link_split[-1]
+                cur_prefix = link[:-len(cur_name)]
+                parent_name = link_split[-2]
+                if not parent_name:
+                    parent_name = '/'
+                    parent_prefix = ''
+                else:
+                    parent_prefix = link[:-(len(cur_name)+len(parent_name)+1)]
+                try:
+                    # print("select name from `{}` where name='{}' and prefix='{}' and type='d'".format(parent_name, cur_name, parent_prefix))
+                    cursor.execute("select name from `{}` where name='{}' and prefix='{}' and type='d'".format(parent_name, cur_name, parent_prefix))
+                except:
+                    print("Error: Specified directory does not exist!")
+                    return
+                if not cursor.fetchall():
+                    print("Error: Specified directory does not exist!")
+                    return
                 self.cur_name = cur_name
                 self.cur_prefix = cur_prefix
                 self.parent_name = parent_name
@@ -148,6 +183,29 @@ class FileSystem(object):
             print(df.to_string(index=False))
         print("total: ", len(result))
         cursor.close()
+
+    def get_path(self):
+        try:
+            cursor = self._connection.cursor()
+            cursor.execute("select * from `$env_path$`")
+        except:
+            print("Error: Can not get PATH!")
+        path = ''
+        for p in cursor.fetchall():
+            path += p[0] + ':'
+        print(path)
+        cursor.close()
+
+    def get_executable(self, command):
+        if command[0] == '/':
+            return [command]
+        executable = []
+        cursor = self._connection.cursor()
+        cursor.execute("select * from `$env_path$`")
+        for p in cursor.fetchall():
+            executable.append(p[0] + '/' + command)
+        cursor.close()
+        return executable
 
     def print_df(self, result):
         if result:
