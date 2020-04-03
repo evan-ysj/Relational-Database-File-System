@@ -145,7 +145,7 @@ class FileSystem(object):
                     cursor.execute("select * from `{}` where name='{}'".format(parent, name))
                     items = cursor.fetchall()
                     for c in items:
-                        row = [c[3] + c[2], c[5], c[6], c[4], c[7], c[1]]
+                        row = [c[3] + c[2], c[5], c[6], c[4], c[7], prefix[0] + c[1]]
                         if c[8]:
                             row.append('-> ' + c[8])
                         else:
@@ -167,15 +167,15 @@ class FileSystem(object):
             if row[0][0] != '-':
                 continue
             try:
-                cursor.execute("select * from `[{}]`".format(row[5]))
+                cursor.execute("select * from `[{}]`".format(row[5].split('/')[-1]))
             except Exception as e:
-                print(e)
+                print("Error: Can not perform query from database!")
                 return
             files = cursor.fetchall()
             for file in files:
                 lines = file[1].split('\n')
                 for i, line in enumerate(lines):
-                    if args[1] in line:
+                    if args[1].strip('"') in line:
                         result.append((i, line, row[5]))
         if result:
             df = pd.DataFrame(result)
