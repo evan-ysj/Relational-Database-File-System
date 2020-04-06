@@ -87,7 +87,7 @@ def print_df(self, result):
 ## Datebase Structure ##
 The structure of database tables are as follow:
 1. Tables for directories
-+-------------+--------------+------+-----+-------------------+-----------------------------+
+
 | Field       | Type         | Null | Key | Default           | Extra                       |
 +-------------+--------------+------+-----+-------------------+-----------------------------+
 | prefix      | varchar(500) | NO   | PRI | NULL              |                             |
@@ -99,19 +99,19 @@ The structure of database tables are as follow:
 | group       | varchar(30)  | NO   |     | root              |                             |
 | update_time | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
 | link        | varchar(500) | YES  |     | NULL              |                             |
-+-------------+--------------+------+-----+-------------------+-----------------------------+
+
 
 2. Tables for files
-+---------+--------------+------+-----+---------+-------+
+
 | Field   | Type         | Null | Key | Default | Extra |
 +---------+--------------+------+-----+---------+-------+
 | prefix  | varchar(500) | NO   | PRI | NULL    |       |
 | content | text         | YES  |     | NULL    |       |
-+---------+--------------+------+-----+---------+-------+
+
 
 3. Table for PATH variables
-+-------+--------------+------+-----+---------+-------+
+
 | Field | Type         | Null | Key | Default | Extra |
 +-------+--------------+------+-----+---------+-------+
 | path  | varchar(500) | NO   | PRI | NULL    |       |
-+-------+--------------+------+-----+---------+-------+
+
