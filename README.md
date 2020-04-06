@@ -7,12 +7,12 @@ Unix file_directory system realized by SQL.
 - treefile  
 - create_fs_linux.py  
 
-The directories and files are collected from real Un*x system by the following command:
+The directories and files are collected from real Linux system by the following command:
 ```bash
 tree -pinsugfDN --charset utf-8 --timefmt "%F %T" -o treefile /
 ```
-This treefile contains all the paths of directories and files within a depth of 4 from the root directory. 
-We use the util module "create_fs.py" to create related database and tables in MySQL. All the directories and files are presented as tables in database. We also copy the file contents into corresponding file tables under "/etc". 
+This treefile contains all the paths of directories and files from the root directory. 
+We use the file "create_fs.py" to create related database and tables in MySQL. All the directories and files are presented as tables in database. We also copy the file contents into corresponding file tables under "/etc". 
 
 ## Program Entrance ##
 
@@ -31,22 +31,56 @@ This file is responsible for parsing user's input strings and process some simpl
 - query.py
 
 This module defines a filesystem class that contains some basic attributes and all the core functions. The attributes and functions are described as below.  
-**Attributes**
+
+**Attributes**  
+Name of the current path.
 ```python
 self.cur_name
+```
+The prefix of current path (path - cur_name).
+```python
 self.cur_prefix
+```
+Name of the parent directory.
+```python
 self.parent_name
+```
+The prefix of parent path (parent_path - parent_name).
+```python
 self.parent_prefix
+```
+The connection object used to communicate with database.
+```python
 self._connection
 ```
-**Functions**
+
+**Functions**  
+Change current directory to "target_dir".
 ```python
 def change_dir(self, target_dir):
+```
+List all the child directories and files of current directory.
+```python
 def list_content(self, args):
+```
+Find the directories and files that match the target name or pattern.
+```python
 def find(self, target):
+```
+Find the lines and files that match the target string pattern.
+```python
 def grep(self, args):
+```
+Get the PATH variables in the system.
+```python
 def get_path(self):
+```
+Get the executable command with full path by concatenating "command" with PATH variables.
+```python
 def get_executable(self, command):
+```
+Convert the query results to pandas dataframes and print to terminal.
+```python
 def print_df(self, result):
 ```
 
