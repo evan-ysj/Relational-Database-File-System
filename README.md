@@ -1,4 +1,4 @@
-# ECE656 Project
+# Relational-Database-File-System
 
 Unix file_directory system realized by SQL.
 
